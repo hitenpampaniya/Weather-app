@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Forecast | WeatherPro{% endblock %}
+{% block nav_forecast %}active{% endblock %}
+
+{% block content %}
+
+<style>
+    .forecast-card {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        color: white;
+        transition: 0.3s;
+    }
+
+    .forecast-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+</style>
+
+<div class="container">
+
+    <!--  Search -->
+    <form method="GET" class="mb-4 d-flex justify-content-center">
+        <input type="text" name="city" value="{{ city }}"
+               class="form-control w-50 me-2"
+               placeholder="Enter city (e.g. Vadodara)" required>
+
+        <button class="btn btn-primary">Get Forecast</button>
+    </form>
+
+    <!--  Error / Empty -->
+    {% if not forecast_data %}
+        <div class="text-center text-white">
+            <p>No forecast data available 😔</p>
+        </div>
+    {% endif %}
+
+    <!--  Forecast Cards -->
+    <div class="row g-4">
+        {% for item in forecast_data %}
+        <div class="col-md-4 col-lg-3">
+            <div class="p-3 text-center forecast-card">
+
+                <h6 class="fw-bold">
+                    {{ item.date|slice:":10" }}
+                </h6>
+
+                <img src="https://openweathermap.org/img/wn/{{ item.icon }}@2x.png" alt="icon">
+
+                <h4 class="fw-bold">
+                    {{ item.temp }}°C
+                </h4>
+
+                <p class="text-capitalize mb-0">
+                    {{ item.weather }}
+                </p>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

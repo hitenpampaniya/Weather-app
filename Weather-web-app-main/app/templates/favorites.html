@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}Favorites{% endblock %}
+{% block nav_favorites %}active{% endblock %}
+
+{% block content %}
+
+<style>
+/* 🌌 Background */
+body {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+}
+
+/* 🔮 Glass Card */
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    color: white;
+}
+
+/* 📍 City Card */
+.city-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    transition: 0.3s;
+    border-radius: 15px;
+}
+
+/* ✨ Hover Effect */
+.city-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* 🟢 Input Focus */
+input:focus {
+    box-shadow: 0 0 10px rgba(0,123,255,0.5);
+    border-color: #0d6efd;
+}
+
+/* ❌ Button */
+.remove-btn {
+    transition: 0.3s;
+}
+.remove-btn:hover {
+    background-color: red;
+    color: white;
+}
+</style>
+
+<div class="container py-5">
+
+    <div class="card shadow-lg border-0 p-4 glass-card">
+
+        <!-- Title -->
+        <h3 class="text-center mb-4 fw-bold">
+            ⭐ Favorite Cities
+        </h3>
+
+        <!-- ➕ Add City -->
+        <form method="POST" class="row g-3 justify-content-center mb-4">
+            {% csrf_token %}
+            
+            <div class="col-md-6">
+                <input type="text" name="city" 
+                       class="form-control form-control-lg rounded-pill shadow-sm"
+                       placeholder="Enter city name..." required>
+            </div>
+
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-4 shadow">
+                    ➕ Add
+                </button>
+            </div>
+        </form>
+
+        <hr class="my-4">
+
+        <!--  Cities -->
+        <div class="row g-3">
+            {% for city in favorites %}
+            
+            <div class="col-md-4">
+                <div class="p-3 d-flex justify-content-between align-items-center city-card">
+
+                    <h5 class="mb-0 fw-semibold">
+                        📍 {{ city }}
+                    </h5>
+
+                    <a href="{% url 'remove_favorite' city %}" 
+                       class="btn btn-sm btn-outline-light rounded-pill remove-btn">
+                        ❌
+                    </a>
+
+                </div>
+            </div>
+
+            {% empty %}
+            <div class="text-center text-light">
+                <p>No favorite cities yet 😔</p>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

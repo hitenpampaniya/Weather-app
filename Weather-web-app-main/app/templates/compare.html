@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Compare | Weather Dashboard{% endblock %}
+{% block nav_compare %}active{% endblock %}
+{% block content %}
+<div class="glass-card p-4 p-lg-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Compare Cities</h1>
+            <p class="text-white-50 mb-0">Compare temperature, humidity, wind, and pressure side by side.</p>
+        </div>
+        <button class="btn btn-warning fw-semibold" id="addCompareRowBtn">Add city</button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>City</th>
+                    <th>Temperature</th>
+                    <th>Humidity</th>
+                    <th>Pressure</th>
+                    <th>Wind</th>
+                    <th>Feels Like</th>
+                </tr>
+            </thead>
+            <tbody id="compareTableBody"></tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

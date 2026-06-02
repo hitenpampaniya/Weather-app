@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% block title %}Settings | Weather Dashboard{% endblock %}
+{% block nav_settings %}active{% endblock %}
+
+{% block content %}
+<div class="row g-4 align-items-stretch">
+    <div class="col-12 col-lg-7">
+        <div class="settings-card p-4 h-100">
+            <div class="mb-4">
+                <h1 class="h3 fw-bold mb-2">Settings</h1>
+                <p class="text-white-50 mb-0">Customize your dashboard preferences.</p>
+            </div>
+
+            <form id="settingsForm" class="d-grid gap-4">
+
+                <!--  Temperature -->
+                <div>
+                    <label class="setting-label">Temperature unit</label>
+                    <select class="form-select setting-select" id="unitSelect">
+                        <option value="celsius">Celsius (°C)</option>
+                        <option value="fahrenheit">Fahrenheit (°F)</option>
+                    </select>
+                </div>
+
+                <!--  Auto Refresh -->
+                <div>
+                    <label class="setting-label">Auto refresh interval</label>
+                    <select class="form-select setting-select" id="refreshSelect">
+                        <option value="0">Manual only</option>
+                        <option value="5">Every 5 minutes</option>
+                        <option value="10">Every 10 minutes</option>
+                        <option value="30">Every 30 minutes</option>
+                    </select>
+                </div>
+
+                <!--  Default City -->
+                <div>
+                    <label class="setting-label">Default city</label>
+                    <input id="defaultCityInput"
+                           class="form-control setting-input"
+                           type="text"
+                           placeholder="Porbandar">
+                </div>
+
+                <!--  Wind Unit -->
+                <div>
+                    <label class="setting-label">Wind speed unit</label>
+                    <select class="form-select setting-select" id="windSelect">
+                        <option value="mps">m/s</option>
+                        <option value="kmh">km/h</option>
+                    </select>
+                </div>
+
+                <!--  Alerts -->
+                <div class="toggle-box">
+                    <div>
+                        <div class="fw-semibold">Weather alerts</div>
+                        <small class="text-white-50">Show warning notifications</small>
+                    </div>
+                    <div class="form-check form-switch m-0">
+                        <input class="form-check-input" type="checkbox" id="alertsToggle">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-warning btn-save">
+                    Save settings
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <!--  Preview -->
+    <div class="col-12 col-lg-5">
+        <div class="settings-card p-4 h-100">
+            <h2 class="h4 fw-bold mb-3">App Preferences</h2>
+
+            <div class="preview-box p-4">
+                <p class="mb-2 text-white-50">Saved values</p>
+                <ul class="mb-0 text-white list-unstyled" id="settingsPreview">
+                    <li>Unit: Celsius</li>
+                    <li>Auto refresh: Manual only</li>
+                    <li>Default city: Porbandar</li>
+                    <li>Wind speed: m/s</li>
+                    <li>Alerts: On</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const unitSelect = document.getElementById("unitSelect");
+    const refreshSelect = document.getElementById("refreshSelect");
+    const defaultCityInput = document.getElementById("defaultCityInput");
+    const windSelect = document.getElementById("windSelect");
+    const alertsToggle = document.getElementById("alertsToggle");
+    const settingsForm = document.getElementById("settingsForm");
+    const settingsPreview = document.getElementById("settingsPreview");
+
+    function updatePreview() {
+        const unitLabel = unitSelect.value === "fahrenheit" ? "Fahrenheit" : "Celsius";
+        const refreshLabel = refreshSelect.value === "0" ? "Manual only" : `Every ${refreshSelect.value} minutes`;
+        const city = defaultCityInput.value.trim() || "Porbandar";
+        const windLabel = windSelect.value === "kmh" ? "km/h" : "m/s";
+        const alertsLabel = alertsToggle.checked ? "On" : "Off";
+
+        settingsPreview.innerHTML = `
+            <li>Unit: ${unitLabel}</li>
+            <li>Auto refresh: ${refreshLabel}</li>
+            <li>Default city: ${city}</li>
+            <li>Wind speed: ${windLabel}</li>
+            <li>Alerts: ${alertsLabel}</li>
+        `;
+    }
+
+    //  Load saved values
+    unitSelect.value = localStorage.getItem("weather_unit") || "celsius";
+    refreshSelect.value = localStorage.getItem("weather_refresh") || "0";
+    defaultCityInput.value = localStorage.getItem("weather_default_city") || "Porbandar";
+    windSelect.value = localStorage.getItem("weather_wind_unit") || "mps";
+    alertsToggle.checked = localStorage.getItem("weather_alerts") !== "off";
+
+    updatePreview();
+
+    //  Listeners
+    unitSelect.addEventListener("change", updatePreview);
+    refreshSelect.addEventListener("change", updatePreview);
+    defaultCityInput.addEventListener("input", updatePreview);
+    windSelect.addEventListener("change", updatePreview);
+    alertsToggle.addEventListener("change", updatePreview);
+
+    //  Save
+    settingsForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        localStorage.setItem("weather_unit", unitSelect.value);
+        localStorage.setItem("weather_refresh", refreshSelect.value);
+        localStorage.setItem("weather_default_city", defaultCityInput.value.trim() || "Porbandar");
+        localStorage.setItem("weather_wind_unit", windSelect.value);
+        localStorage.setItem("weather_alerts", alertsToggle.checked ? "on" : "off");
+
+        updatePreview();
+
+        const btn = settingsForm.querySelector("button");
+        const oldText = btn.innerText;
+        btn.innerText = "Saved!";
+        setTimeout(() => btn.innerText = oldText, 1200);
+    });
+
+});
+</script>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Home | Weather Dashboard{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block extra_css %}
+<style>
+    .weather-card {
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        color: white;
+    }
+
+    .weather-icon {
+        width: 100px;
+    }
+
+    .info-box {
+        background: rgba(0,0,0,0.2);
+        border-radius: 12px;
+        padding: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <!--  Search -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="weather-card p-4 text-center mb-4">
+                <h3 class="fw-bold mb-3">🌤 Weather Search</h3>
+
+                <form method="GET" class="d-flex gap-2">
+                    <input 
+                        type="text" 
+                        name="city" 
+                        class="form-control" 
+                        placeholder="Enter city..."
+                        value="{{ city|default:'' }}"
+                        required
+                    >
+                    <button class="btn btn-warning">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--  Error -->
+    {% if error %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="alert alert-danger text-center">
+                 {{ error }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!--  Weather Data -->
+    {% if temp %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="weather-card p-4 text-center">
+
+                <!-- City -->
+                <h2 class="fw-bold text-capitalize">{{ city }}</h2>
+
+                <!-- Icon -->
+                <img 
+                    src="https://openweathermap.org/img/wn/{{ icon }}@2x.png" 
+                    class="weather-icon"
+                >
+
+                <!-- Temperature -->
+                <h1 class="display-3 fw-bold">{{ temp }}°C</h1>
+
+                <!-- Weather -->
+                <p class="lead text-capitalize">{{ weather }}</p>
+
+                <!-- Extra Info -->
+                <div class="row mt-4">
+                    <div class="col-6">
+                        <div class="info-box">
+                            <small>Humidity</small>
+                            <h5>{{ humidity }}%</h5>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="info-box">
+                            <small>Wind</small>
+                            <h5>{{ wind }} km/h</h5>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
